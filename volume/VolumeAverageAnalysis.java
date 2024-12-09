@@ -9,27 +9,24 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
 
-
-
 /**
  * This program calculates the average amount of money traded per day for each stock.
  * It considers the number of shares traded (volume) and the stock's price at the end of the day.
  * The calculation is based on the formula:
- * 
+ *
  *      Average Daily Dollar Volume = Total Dollar Volume / Number of Days
- * 
+ *
  * where Dollar Volume = Volume × Closing Price.
  * The result shows which stocks consistently have the highest financial activity on average.
  */
-
-public class AverageDollarVolume {
+public class VolumeAverageAnalysis {
 
     /**
      * Mapper class processes each line of the input CSV file and emits:
      * Key: Stock symbol (e.g., "AAPL").
-     * Value: A pair containing the dollar volume for the day and the count (e.g., "5000000,1").
+     * Value: The dollar volume for the day (e.g., 5000000.0).
      */
-    public static class MapperQ2 extends Mapper<LongWritable, Text, Text, Text> {
+    public static class MapperQ2 extends Mapper<LongWritable, Text, Text, DoubleWritable> {
         private boolean isHeader = true; // Flag to skip the header row
 
         @Override
@@ -64,8 +61,8 @@ public class AverageDollarVolume {
                 // Calculate the dollar volume for the day (volume × close price)
                 double dollarVolume = close * volume;
 
-                // Emit the stock symbol as the key and "dollarVolume,1" as the value
-                context.write(new Text(symbol), new Text(dollarVolume + ",1"));
+                // Emit the stock symbol as the key and the dollar volume as the value
+                context.write(new Text(symbol), new DoubleWritable(dollarVolume));
             } catch (NumberFormatException e) {
                 // Skip invalid or malformed data
             }
@@ -78,22 +75,16 @@ public class AverageDollarVolume {
      * Key: Stock symbol.
      * Value: Average daily dollar volume traded.
      */
-    public static class ReducerQ2 extends Reducer<Text, Text, Text, DoubleWritable> {
+    public static class ReducerQ2 extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
         @Override
-        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        protected void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
             double totalDollarVolume = 0.0;
             int totalDays = 0;
 
             // Sum up the dollar volumes and count the number of days
-            for (Text val : values) {
-                String[] parts = val.toString().split(",");
-                if (parts.length == 2) {
-                    double dollarVolume = Double.parseDouble(parts[0]);
-                    int dayCount = Integer.parseInt(parts[1]);
-
-                    totalDollarVolume += dollarVolume;
-                    totalDays += dayCount;
-                }
+            for (DoubleWritable val : values) {
+                totalDollarVolume += val.get();
+                totalDays += 1; // Each value corresponds to one trading day
             }
 
             // Calculate the average daily dollar volume
@@ -106,11 +97,11 @@ public class AverageDollarVolume {
 
     /**
      * Main method sets up and configures the Hadoop job.
-     * Usage: AverageDollarVolume <input> <output>
+     * Usage: VolumeAverageAnalysis <input> <output>
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
-            System.err.println("Usage: AverageDollarVolume <input> <output>");
+            System.err.println("Usage: VolumeAverageAnalysis <input> <output>");
             System.exit(-1);
         }
 
@@ -118,12 +109,14 @@ public class AverageDollarVolume {
         Configuration conf = new Configuration();
 
         // Set up the job configuration
-        Job job = Job.getInstance(conf, "AverageDollarVolume");
-        job.setJarByClass(AverageDollarVolume.class);
+        Job job = Job.getInstance(conf, "VolumeAverageAnalysis");
+        job.setJarByClass(VolumeAverageAnalysis.class);
         job.setMapperClass(MapperQ2.class);
         job.setReducerClass(ReducerQ2.class);
 
-        // Specify the output key and value types for the job
+        // Specify the output key and value types for the mapper and reducer
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(DoubleWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
 

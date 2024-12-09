@@ -10,10 +10,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.io.IOException;
 
 /**
- * Q1MinMaxClose computes the minimum and maximum closing values of stocks by symbol.
+ * MinMaxAnalysis computes the minimum and maximum closing values of stocks by symbol.
  * Does it over time and for the whole input file.
  */
-public class Q1MinMaxClose {
+public class MinMaxAnalysis {
 
     /**
      * Mapper class that processes each line of the input file.
@@ -84,7 +84,7 @@ public class Q1MinMaxClose {
     public static void main(String[] args) throws Exception {
         // Check if input and output paths are provided
         if (args.length < 2) {
-            System.err.println("Usage: Q1MinMaxClose <input> <output>");
+            System.err.println("Usage: MinMaxAnalysis <input> <output>");
             System.exit(-1);
         }
 
@@ -92,8 +92,8 @@ public class Q1MinMaxClose {
         Configuration conf = new Configuration();
 
         // Set up the job configuration
-        Job job = Job.getInstance(conf, "Q1MinMaxClose");
-        job.setJarByClass(Q1MinMaxClose.class);
+        Job job = Job.getInstance(conf, "MinMaxAnalysis");
+        job.setJarByClass(MinMaxAnalysis.class);
 
         // Specify the Mapper and Reducer classes
         job.setMapperClass(MapperQ1.class);

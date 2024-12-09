@@ -15,7 +15,7 @@ import java.util.*;
  * over the last x days (defaulting to 30 days). It can be used to compare the performance
  * of multiple stocks over the same period.
  */
-public class Q4Uptrend {
+public class TrendingAnalysis {
 
     /**
      * Mapper class processes each line of the input CSV file and emits:
@@ -121,7 +121,7 @@ public class Q4Uptrend {
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
-            System.err.println("Usage: Q4Uptrend [-Dx=<days>] <input> <output>");
+            System.err.println("Usage: TrendingAnalysis [-Dx=<days>] <input> <output>");
             System.exit(-1);
         }
 
@@ -129,8 +129,8 @@ public class Q4Uptrend {
         Configuration conf = new Configuration();
 
         // Set up the job configuration
-        Job job = Job.getInstance(conf, "Q4Uptrend");
-        job.setJarByClass(Q4Uptrend.class);
+        Job job = Job.getInstance(conf, "TrendingAnalysis");
+        job.setJarByClass(TrendingAnalysis.class);
         job.setMapperClass(MapperQ4.class);
         job.setReducerClass(ReducerQ4.class);
 

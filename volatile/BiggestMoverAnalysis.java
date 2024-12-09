@@ -13,7 +13,7 @@ import java.io.IOException;
  * This program calculates the top stock mover (highest percentage gain) for each trading day
  * based on opening and closing price
  */
-public class Q3DailyTopMovers {
+public class BiggestMoverAnalysis {
 
     /**
      * Mapper class processes each line of the input CSV file and emits:
@@ -112,7 +112,7 @@ public class Q3DailyTopMovers {
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
-            System.err.println("Usage: Q3DailyTopMovers <input> <output>");
+            System.err.println("Usage: BiggestMoverAnalysis <input> <output>");
             System.exit(-1);
         }
 
@@ -120,8 +120,8 @@ public class Q3DailyTopMovers {
         Configuration conf = new Configuration();
 
         // Set up the job configuration
-        Job job = Job.getInstance(conf, "Q3DailyTopMovers");
-        job.setJarByClass(Q3DailyTopMovers.class);
+        Job job = Job.getInstance(conf, "BiggestMoverAnalysis");
+        job.setJarByClass(BiggestMoverAnalysis.class);
         job.setMapperClass(MapperQ3.class);
         job.setReducerClass(ReducerQ3.class);
 
