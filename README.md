@@ -33,36 +33,36 @@ Located in `volume/VolumeAverageAnalysis.java`:
 ### Before Running the Project
 
 1. **Stop any stale services:**
- stop-dfs.sh
- stop-yarn.sh 
+ - ```stop-dfs.sh```
+ - ```stop-yarn.sh```
 2. **Start services**
-start-dfs.sh
-start-yarn.sh
+ - ```start-dfs.sh```
+ - ```start-yarn.sh```
 3. **Check for jps**
-jps
+ - ```jps```
 should see: NameNode, DataNode, ResourceManager, NodeManager
 
 ### Run project
-./run.sh
+ ```./run.sh```
 
 ### Trouble shoot
-check disk space: df -h
-clear out temporary hdfs files: hdfs dfs -rm -r /tmp/*
-remove log files: rm -rf $HADOOP_HOME/logs/*
+- check disk space: ```df -h```
+- clear out temporary hdfs files: ```hdfs dfs -rm -r /tmp/*```
+- remove log files: ```rm -rf $HADOOP_HOME/logs/*```
 
 
 ## Checking Results
 
 ### Check output directories
-hdfs dfs -ls output
+```hdfs dfs -ls output```
 should see-- min_max, volume, movers, trending folder
-### Reducer is one
-hdfs dfs -cat output/min_max/part-r-00000
-hdfs dfs -cat output/volume/part-r-00000
-hdfs dfs -cat output/movers/part-r-00000
-hdfs dfs -cat output/trending/part-r-00000
+### Reducer is one so results are here
+- ```hdfs dfs -cat output/min_max/part-r-00000```
+- ```hdfs dfs -cat output/volume/part-r-00000```
+- ```hdfs dfs -cat output/movers/part-r-00000```
+- ```hdfs dfs -cat output/trending/part-r-00000```
 ### Reset folder (deletes output and all subfolders )
-hdfs dfs -rm -r output
+- ```hdfs dfs -rm -r output```
 
 
 
