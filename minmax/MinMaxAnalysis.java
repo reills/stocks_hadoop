@@ -8,106 +8,129 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 /**
- * MinMaxAnalysis computes the minimum and maximum closing values of stocks by symbol.
- * Does it over time and for the whole input file.
+ * minmaxanalysis computes the min and max closing values of stocks by symbol
+ * also tracks the starting date and calculates the percentage increase
  */
 public class MinMaxAnalysis {
 
     /**
-     * Mapper class that processes each line of the input file.
-     * It extracts the stock symbol and closing value, emitting them as key-value pairs.
+     * mapper class processes each line of the input file
+     * emits the stock symbol and a composite value (date and closing value)
      */
-    public static class MapperQ1 extends Mapper<LongWritable, Text, Text, DoubleWritable> {
-        private boolean isHeader = true; // Flag to skip the header line
+    public static class MapperQ1 extends Mapper<LongWritable, Text, Text, Text> {
+        private boolean isHeader = true;
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            // Skip the header line (first line of the file)
+            // skip the header line (first line of the file)
             if (isHeader) {
                 isHeader = false;
-                return;
+                return
             }
 
-            // Split the line into parts based on commas
-            String line = value.toString();
-            String[] parts = line.split(",");
+            // split the line into parts based on commas
+            String line = value.toString()
+            String[] parts = line.split(",")
 
-            // Validate that the line has the expected number of fields
-            if (parts.length < 8) return;
+            if (parts.length < 8) return // validate number of fields
 
-            // Extract the stock symbol and closing value
-            String symbol = parts[1].trim();
-            String closeStr = parts[3].trim();
+            String symbol = parts[1].trim()
+            String date = parts[0].trim()
+            String closeStr = parts[3].trim()
 
-            // Check if the symbol or closing price is missing
-            if (symbol.isEmpty() || closeStr.isEmpty()) {
-                return; // Skip rows with missing symbol or closing price
-            }
+            if (symbol.isEmpty() || date.isEmpty() || closeStr.isEmpty()) return
 
             try {
-                // Parse the closing value and write the key-value pair to context
-                double closeVal = Double.parseDouble(closeStr);
-                context.write(new Text(symbol), new DoubleWritable(closeVal));
+                // emit symbol as key and a composite string of date and closing value as value
+                double closeVal = Double.parseDouble(closeStr)
+                context.write(new Text(symbol), new Text(date + "," + closeVal))
             } catch (NumberFormatException e) {
-                // Skip invalid numeric data
+                // skip invalid numeric data
             }
         }
     }
 
     /**
-     * Reducer class that calculates the minimum and maximum closing values for each stock symbol.
+     * reducer class calculates the min, max closing values,
+     * starting date, and percentage increase for each stock symbol
      */
-    public static class ReducerQ1 extends Reducer<Text, DoubleWritable, Text, Text> {
+    public static class ReducerQ1 extends Reducer<Text, Text, Text, Text> {
         @Override
-        protected void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
-            // Initialize min and max values
-            double min = Double.MAX_VALUE;
-            double max = Double.MIN_VALUE;
+        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+            double min = Double.MAX_VALUE
+            double max = Double.MIN_VALUE
 
-            // Iterate over all values to find the min and max
-            for (DoubleWritable val : values) {
-                double d = val.get();
-                if (d < min) min = d;
-                if (d > max) max = d;
+            String startDate = null
+            double startValue = 0.0
+
+            PriorityQueue<String[]> dateQueue = new PriorityQueue<>(Comparator.comparing(o -> o[0]))
+
+            for (Text val : values) {
+                String[] parts = val.toString().split(",")
+                if (parts.length != 2) continue
+
+                String date = parts[0]
+                double closeVal
+
+                try {
+                    closeVal = Double.parseDouble(parts[1])
+                } catch (NumberFormatException e) {
+                    continue
+                }
+
+                // update min and max
+                if (closeVal < min) min = closeVal
+                if (closeVal > max) max = closeVal
+
+                // track earliest date and its closing value
+                dateQueue.offer(new String[]{date, String.valueOf(closeVal)})
             }
 
-            // Write the results as a single string for each stock symbol
-            context.write(key, new Text("MinClose=" + min + ",MaxClose=" + max));
+            // determine starting date and value
+            if (!dateQueue.isEmpty()) {
+                String[] startEntry = dateQueue.poll()
+                startDate = startEntry[0]
+                startValue = Double.parseDouble(startEntry[1])
+            }
+
+            // calculate percentage increase
+            double percentIncrease = (startValue != 0) ? ((max - startValue) / startValue) * 100 : 0
+
+            // output the result
+            context.write(key, new Text("startdate=" + startDate +
+                    ", startvalue=" + startValue +
+                    ", minclose=" + min +
+                    ", maxclose=" + max +
+                    ", percentincrease=" + percentIncrease + "%"))
         }
     }
 
     /**
-     * The main method sets up and runs the Hadoop job.
+     * the main method sets up and runs the hadoop job
      */
     public static void main(String[] args) throws Exception {
-        // Check if input and output paths are provided
         if (args.length < 2) {
-            System.err.println("Usage: MinMaxAnalysis <input> <output>");
-            System.exit(-1);
+            System.err.println("usage: minmaxanalysis <input> <output>")
+            System.exit(-1)
         }
 
-        // Create a new Hadoop configuration
-        Configuration conf = new Configuration();
+        Configuration conf = new Configuration()
+        Job job = Job.getInstance(conf, "minmaxanalysis")
+        job.setJarByClass(MinMaxAnalysis.class)
 
-        // Set up the job configuration
-        Job job = Job.getInstance(conf, "MinMaxAnalysis");
-        job.setJarByClass(MinMaxAnalysis.class);
+        job.setMapperClass(MapperQ1.class)
+        job.setReducerClass(ReducerQ1.class)
 
-        // Specify the Mapper and Reducer classes
-        job.setMapperClass(MapperQ1.class);
-        job.setReducerClass(ReducerQ1.class);
+        job.setOutputKeyClass(Text.class)
+        job.setOutputValueClass(Text.class)
 
-        // Specify the output key and value types
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DoubleWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]))
+        FileOutputFormat.setOutputPath(job, new Path(args[1]))
 
-        // Set the input and output paths
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-
-        // Exit with success or failure code based on job completion
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+        System.exit(job.waitForCompletion(true) ? 0 : 1)
     }
 }

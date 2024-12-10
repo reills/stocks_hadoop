@@ -1,49 +1,34 @@
 #!/usr/bin/env bash
 
-# *************************************************************************
-# Instructions:
-#
-# 1. Before running this script:
-#    - Run `stop-dfs.sh` and `stop-yarn.sh` to ensure no stale services.
-#    - Remove any leftover PID files in /tmp/hadoop-<username>-*.pid if needed.
-#    - Start Hadoop services once manually by running:
-#        start-dfs.sh
-#        start-yarn.sh
-#    - Verify that NameNode, DataNode, ResourceManager, and NodeManager are running:
-#        jps | grep -E "NameNode|DataNode|ResourceManager|NodeManager"
-#
+# 1. Before running this script: Run `stop-dfs.sh` and `stop-yarn.sh`, Start Hadoop services with: start-dfs.sh and start-yarn.sh
+# - Check with jps to make sure NameNode, DataNode, ResourceManager, and NodeManager are running
 # 2. Once the cluster is stable, run this script to:
-#    - Ensure the input/output directories in HDFS
-#    - Upload files to HDFS
-#    - Compile the Java classes and create a JAR
-#    - Run your MapReduce jobs
-#
-# *************************************************************************
+# - Ensure the input/output directories in HDFS, load files to HDFS, compile the java classes and create a JAR, run the jobs
 
-# Name of the JAR file to be created
+# name of the JAR file to create
 JAR_NAME="stock-analysis.jar"
 
-# Input and output directories (relative to the project root)
+# input and output directories
 INPUT_DIR="input"
 OUTPUT_BASE="output"
 
-# Get the current username for HDFS paths
+# get current username for HDFS paths
 CURRENT_USER=$(whoami)
 HDFS_INPUT_DIR="/user/$CURRENT_USER/input"
 HDFS_OUTPUT_DIR="/user/$CURRENT_USER/output"
 
-# Clean previous classes and output directories if needed
+# clean previous classes and output directories if needed
 rm -rf classes
 rm -rf "$OUTPUT_BASE"
 
-# Create classes and output directories
+# create classes and output directories
 mkdir -p classes
 mkdir -p "$OUTPUT_BASE"
 
-# Find all Java source files
+# find all java source files
 JAVA_FILES=$(find . -name "*.java")
 
-# Function: Ensure HDFS directory exists
+# function: ensure HDFS directory exists
 ensure_hdfs_directory() {
     local dir_path=$1
     echo "Checking if HDFS directory $dir_path exists..."
@@ -59,9 +44,7 @@ ensure_hdfs_directory() {
     fi
 }
 
-# Since we rely on a stable cluster, we no longer attempt to start or stop services here.
-# We assume Hadoop (HDFS + YARN) is already running and HDFS is accessible.
-
+# assume Hadoop (HDFS + YARN) is already running and HDFS is accessible.
 echo "Ensuring HDFS input directory..."
 ensure_hdfs_directory "$HDFS_INPUT_DIR"
 
@@ -112,5 +95,10 @@ echo "BiggestMoverAnalysis completed."
 # 4. TrendingAnalysis (with -Dx=30)
 hadoop jar "$JAR_NAME" com.example.stockanalysis.TrendingAnalysis -Dx=30 "$HDFS_INPUT_DIR" "$HDFS_OUTPUT_DIR/trending"
 echo "TrendingAnalysis completed."
+
+# 5. Biggest in last year
+hadoop jar "$JAR_NAME" com.example.stockanalysis.TopPerformer -Dx=365 "$HDFS_INPUT_DIR" "$HDFS_OUTPUT_DIR/top"
+echo "TopPerformer completed."
+
 
 echo "All MapReduce jobs finished!"
