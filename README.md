@@ -28,12 +28,6 @@ Located in `volume/VolumeAverageAnalysis.java`:
 - Calculates the average dollar volume traded per day for each stock.
 - Formula: ```Average Daily Dollar Volume = Total Dollar Volume / Number of Days Dollar Volume = Volume × Closing Price ```
 
-### 4. Volume Average Analysis
-Located in `volume/VolumeAverageAnalysis.java`:
-- Calculates the average dollar volume traded per day for each stock.
-- Formula: ```Average Daily Dollar Volume = Total Dollar Volume / Number of Days Dollar Volume = Volume × Closing Price ```
-
-
 ### 5. Yearly Top Performer
 Located in `yearlytop/TopPerformer.java`:
 - Computes the performance of each stock over the last 'x' days (default is 365, representing a year).
