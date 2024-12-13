@@ -37,23 +37,23 @@ public class TopPerformer {
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             // skip the header row (only for the first line)
             if (isHeader) {
-                isHeader = false
-                return
+                isHeader = false;
+                return;
             }
 
             // split the input line into parts based on commas
-            String[] parts = value.toString().split(",")
-            if (parts.length < 4) return
+            String[] parts = value.toString().split(",");
+            if (parts.length < 4) return;
 
-            String date = parts[0].trim()
-            String symbol = parts[1].trim()
-            String closeStr = parts[3].trim()
+            String date = parts[0].trim();
+            String symbol = parts[1].trim();
+            String closeStr = parts[3].trim();
             
             try {
                 // validate closing price
-                Double.parseDouble(closeStr)
+                Double.parseDouble(closeStr);
                 // emit symbol as key, and "date,close" as value
-                context.write(new Text(symbol), new Text(date + "," + closeStr))
+                context.write(new Text(symbol), new Text(date + "," + closeStr));
             } catch (NumberFormatException e) {
                 // skip invalid price lines
             }
@@ -73,24 +73,24 @@ public class TopPerformer {
      * - output stock symbol, start date (earliest date in range), and percent gain
      */
     public static class ReducerQ5 extends Reducer<Text, Text, Text, Text> {
-        private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd")
+        private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-            Configuration conf = context.getConfiguration()
-            int days = conf.getInt("x", 365) // default to 365 days if not provided
+            Configuration conf = context.getConfiguration();
+            int days = conf.getInt("x", 365); // default to 365 days if not provided
 
             // collect all records: [date, close]
-            List<String[]> records = new ArrayList<>()
-            List<Date> parsedDates = new ArrayList<>()
+            List<String[]> records = new ArrayList<>();
+            List<Date> parsedDates = new ArrayList<>();
 
             for (Text val : values) {
-                String[] parts = val.toString().split(",")
+                String[] parts = val.toString().split(",");
                 if (parts.length == 2) {
                     try {
-                        Date d = DATE_FORMAT.parse(parts[0])
-                        records.add(parts)
-                        parsedDates.add(d)
+                        Date d = DATE_FORMAT.parse(parts[0]);
+                        records.add(parts);
+                        parsedDates.add(d);
                     } catch (ParseException e) {
                         // skip invalid date
                     }
@@ -98,49 +98,49 @@ public class TopPerformer {
             }
 
             // if no valid records, skip
-            if (records.isEmpty()) return
+            if (records.isEmpty()) return;
 
             // sort records by date
-            List<RecordWithDate> combined = new ArrayList<>()
+            List<RecordWithDate> combined = new ArrayList<>();
             for (int i = 0; i < records.size(); i++) {
-                combined.add(new RecordWithDate(parsedDates.get(i), records.get(i)))
+                combined.add(new RecordWithDate(parsedDates.get(i), records.get(i)));
             }
-            combined.sort(Comparator.comparing(r -> r.date))
+            combined.sort(Comparator.comparing(r -> r.date));
 
             // filter records within the last x days
-            Date maxDate = combined.get(combined.size() - 1).date
-            Calendar cal = Calendar.getInstance()
-            cal.setTime(maxDate)
-            cal.add(Calendar.DAY_OF_YEAR, -days)
-            Date cutoffDate = cal.getTime()
+            Date maxDate = combined.get(combined.size() - 1).date;
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(maxDate);
+            cal.add(Calendar.DAY_OF_YEAR, -days);
+            Date cutoffDate = cal.getTime();
 
-            List<String[]> filtered = new ArrayList<>()
+            List<String[]> filtered = new ArrayList<>();
             for (RecordWithDate rwd : combined) {
                 if (!rwd.date.before(cutoffDate)) {
-                    filtered.add(rwd.record)
+                    filtered.add(rwd.record);
                 }
             }
 
             // if fewer than 2 points, skip
-            if (filtered.size() < 2) return
+            if (filtered.size() < 2) return;
 
             // calculate percentage gain
-            double firstClose = Double.parseDouble(filtered.get(0)[1])
-            double lastClose = Double.parseDouble(filtered.get(filtered.size() - 1)[1])
-            double percentGain = ((lastClose - firstClose) / firstClose) * 100.0
+            double firstClose = Double.parseDouble(filtered.get(0)[1]);
+            double lastClose = Double.parseDouble(filtered.get(filtered.size() - 1)[1]);
+            double percentGain = ((lastClose - firstClose) / firstClose) * 100.0;
 
             // output symbol with start date and percent gain
-            context.write(key, new Text(filtered.get(0)[0] + "," + percentGain))
+            context.write(key, new Text(filtered.get(0)[0] + "," + percentGain));
         }
 
         // helper class to store records alongside their parsed date
         static class RecordWithDate {
-            Date date
-            String[] record
+            Date date;
+            String[] record;
 
             RecordWithDate(Date date, String[] record) {
-                this.date = date
-                this.record = record
+                this.date = date;
+                this.record = record;
             }
         }
     }
@@ -152,25 +152,25 @@ public class TopPerformer {
      */
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
-            System.err.println("usage: topperformer [-Dx=<days>] <input> <output>")
-            System.exit(-1)
+            System.err.println("usage: topperformer [-Dx=<days>] <input> <output>");
+            System.exit(-1);
         }
 
-        Configuration conf = new Configuration()
+        Configuration conf = new Configuration();
 
-        Job job = Job.getInstance(conf, "topperformer")
-        job.setJarByClass(TopPerformer.class)
-        job.setMapperClass(MapperQ5.class)
-        job.setReducerClass(ReducerQ5.class)
+        Job job = Job.getInstance(conf, "topperformer");
+        job.setJarByClass(TopPerformer.class);
+        job.setMapperClass(MapperQ5.class);
+        job.setReducerClass(ReducerQ5.class);
 
         // output key and value classes
-        job.setOutputKeyClass(Text.class)
-        job.setOutputValueClass(Text.class)
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
 
         // set input and output paths
-        FileInputFormat.addInputPath(job, new Path(args[args.length - 2]))
-        FileOutputFormat.setOutputPath(job, new Path(args[args.length - 1]))
+        FileInputFormat.addInputPath(job, new Path(args[args.length - 2]));
+        FileOutputFormat.setOutputPath(job, new Path(args[args.length - 1]));
 
-        System.exit(job.waitForCompletion(true) ? 0 : 1)
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }
