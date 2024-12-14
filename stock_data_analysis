@@ -1,0 +1,38 @@
+
+# Stock Data Analysis Documentation
+
+## Overview
+Stock data analysis involves evaluating financial data to gain insights into market trends, stock performance, and trading patterns. This document describes a sample dataset and key metrics that can be derived from stock trading data.
+
+## Dataset Description
+The dataset consists of 100 records of daily stock trading data for 10 different companies. Each record includes the following fields:
+- **Stock Symbol**: The ticker symbol representing the company (e.g., AAPL, MSFT).
+- **Date**: The trading date.
+- **Opening Price**: The stock price at the start of the trading session.
+- **Closing Price**: The stock price at the end of the trading session.
+- **Volume**: The number of shares traded during the day.
+
+### Derived Metrics
+Additional metrics are calculated for analytical purposes:
+1. **Daily Change**: The absolute difference between the Closing Price and the Opening Price.
+   - Formula: `Daily Change = Closing Price - Opening Price`
+2. **Percentage Change (%)**: The daily price movement as a percentage of the Opening Price.
+   - Formula: `Percentage Change (%) = (Daily Change / Opening Price) * 100`
+3. **High Volume Flag**: A boolean flag indicating whether the trading volume exceeded 500,000 shares.
+
+### Example Data
+| Stock Symbol | Date       | Opening Price | Closing Price | Volume   | Daily Change | Percentage Change (%) | High Volume |
+|--------------|------------|---------------|---------------|----------|--------------|------------------------|-------------|
+| AAPL         | 2024-01-01 | 453.21        | 476.34        | 823456   | 23.13        | 5.10                   | True        |
+| TSLA         | 2024-01-02 | 867.45        | 821.30        | 234567   | -46.15       | -5.32                  | False       |
+
+## Applications of Stock Data Analysis
+1. **Trend Analysis**: Identifying bullish or bearish trends based on price movement.
+2. **Volume Analysis**: Studying trading volumes to assess market interest in a stock.
+3. **Volatility Insights**: Evaluating percentage changes to understand stock volatility.
+4. **Algorithmic Trading**: Using historical data to build predictive models for trading strategies.
+
+## How to Use This Dataset
+1. **Download the CSV File**: You can access the dataset in `.csv` format.
+2. **Load into Analysis Tools**: Import the data into tools like Python, Excel, or Tableau.
+3. **Perform Custom Analysis**: Use the derived metrics to answer specific financial questions.
