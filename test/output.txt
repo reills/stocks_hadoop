@@ -1,0 +1,134 @@
+Script started on 2024-12-07 00:47:52+00:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="99" LINES="45"]
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ nano WordCount.ja va
+[?2004l[?2004h[?1049h[22;0;0t[1;45r(B[m[4l[?7h[39;49m[?1h=[?1h=[?25l[39;49m(B[m[H[2J[43;43H(B[0;7m[ Reading... ](B[m[43;42H(B[0;7m[ Read 90 lines ](B[m[H(B[0;7m  GNU nano 6.2                               WordCount.java                                        [1;98H(B[m[44d(B[0;7m^G(B[m Help[44;17H(B[0;7m^O(B[m Write Out    (B[0;7m^W(B[m Where Is     (B[0;7m^K(B[m Cut[44;65H(B[0;7m^T(B[m Execute[81G(B[0;7m^C(B[m Location[45d(B[0;7m^X(B[m Exit[45;17H(B[0;7m^R(B[m Read File    (B[0;7m^\(B[m Replace[49G(B[0;7m^U(B[m Paste[45;65H(B[0;7m^J(B[m Justify[81G(B[0;7m^/(B[m Go To Line[2d(B[0;1m[34m/**[3d * Licensed to the Apache Software Foundation (ASF) under one[4d * or more contributor license agreements.  See the NOTICE file[5d * distributed with this work for additional information[6d * regarding copyright ownership.  The ASF licenses this file[7d * to you under the Apache License, Version 2.0 (the[8d * "License"); you may not use this file except in compliance[9d * with the License.  You may obtain a copy of the License at[10d *[11d *     http://www.apache.org/licenses/LICENSE-2.0[12d *[13d * Unless required by applicable law or agreed to in writing, software[14d * distributed under the License is distributed on an "AS IS" BASIS,[15d * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.[16d * See the License for the specific language governing permissions and[17d * limitations under the License.[18d */[19d(B[0m[34m//package org.apache.hadoop.examples;[21d[36mimport[39m(B[m java.io.IOException;[22d[36mimport[39m(B[m java.util.StringTokenizer;[24d[36mimport[39m(B[m org.apache.hadoop.conf.Configuration;[25d[36mimport[39m(B[m org.apache.hadoop.fs.Path;[26d[36mimport[39m(B[m org.apache.hadoop.io.IntWritable;[27d[36mimport[39m(B[m org.apache.hadoop.io.Text;[28d[36mimport[39m(B[m org.apache.hadoop.mapreduce.Job;[29d[36mimport[39m(B[m org.apache.hadoop.mapreduce.Mapper;[30d[36mimport[39m(B[m org.apache.hadoop.mapreduce.Reducer;[31d[36mimport[39m(B[m org.apache.hadoop.mapreduce.lib.input.FileInputFormat;[32d[36mimport[39m(B[m org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;[33d[36mimport[39m(B[m org.apache.hadoop.util.GenericOptionsParser;[35d[36mpublic[39m(B[m [36mclass[39m(B[m WordCount {[37;3H[36mpublic[39m(B[m [36mstatic[39m(B[m [36mclass[39m(B[m TokenizerMapper[42m [38;8H[49m[36mextends[39m(B[m Mapper<Object, Text, Text, IntWritable>{[39d[42m    [40d[49m[36mprivate[39m(B[m [36mfinal[39m(B[m [36mstatic[39m(B[m IntWritable one = [32mnew[39m(B[m IntWritable(1);[41;5H[36mprivate[39m(B[m Text word = [32mnew[39m(B[m Text();[42;6H[42m[1K[2d[49m(B[m[?12l[?25h[?25l[?12l[?25h[3d[?25l[?12l[?25h[4d[?25l[?12l[?25h[5d[?25l[?12l[?25h[6d[?25l[?12l[?25h[7d[?25l[?12l[?25h[8d[?25l[?12l[?25h[10d[?25l[?12l[?25h[11d[?25l[?12l[?25h[12d[?25l[?12l[?25h[13d[?25l[?12l[?25h[14d[?25l[?12l[?25h[15d[?25l[?12l[?25h[17d[?25l[?12l[?25h[18d[?25l[?12l[?25h[19d[?25l[?12l[?25h[20d[?25l[?12l[?25h[21d[?25l[43d[K[?12l[?25h[22d[?25l[?12l[?25h[23d[?25l[?12l[?25h[24d[?25l[?12l[?25h[26d[?25l[?12l[?25h[28d[?25l[?12l[?25h[30d[?25l[?12l[?25h[32d[?25l[?12l[?25h[35d[?25l[?12l[?25h[38d[?25l[?12l[?25h[40d[?25l[?12l[?25h[41d[?25l[?12l[?25h[2;43r[43;1H
+[1;45r[42;5H[36mpublic[39m(B[m [32mvoid[39m(B[m map(Object key, Text value, Context context[?25l[?12l[?25h7[2;43r8[43d[3S[1;45r[40;21H) [36mthrows[39m(B[m IOException, InterruptedException {[41;7HStringTokenizer itr = [32mnew[39m(B[m StringTokenizer(value.toString());[42;7H[31mwhile[39m(B[m (itr.hasMoreTokens()) {[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;9Hword.set(itr.nextToken());[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;9Hcontext.write(word, one);[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;7H}[?25l[?12l[?25h7[2;43r8[43d[2S[1;45r[41;5H}[42;3H}[?25l[?12l[?25h7[2;43r8[43d[3S[1;45r[40;1H[42m  [41d[49m[36mpublic[39m(B[m [36mstatic[39m(B[m [36mclass[39m(B[m IntSumReducer[42m [42;8H[49m[36mextends[39m(B[m Reducer<Text,IntWritable,Text,IntWritable> {[?25l[?12l[?25h7[2;43r8[43d[2S[1;45r[41;5H[36mprivate[39m(B[m IntWritable result = [32mnew[39m(B[m IntWritable();[42d[?25l[?12l[?25h7[2;43r8[43d[4S[1;45r[39;5H[36mpublic[39m(B[m [32mvoid[39m(B[m reduce(Text key, Iterable<IntWritable> values,[42m [40;24H[49m(B[mContext context[41;24H) [36mthrows[39m(B[m IOException, InterruptedException {[42;7H[32mint[39m(B[m sum = 0;[?25l[?12l[?25h7[2;43r8[43d[4S[1;45r[39;7H[31mfor[39m(B[m (IntWritable val : values) {[40;9Hsum += val.get();[41;7H}[42dresult.set(sum);[?25l[?12l[?25h7[2;43r8[43d[2S[1;45r[41;7Hcontext.write(key, result);[42;5H}[?25l[?12l[?25h7[2;43r8[43d[2S[1;45r[41;3H}[42d[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;3H[36mpublic[39m(B[m [36mstatic[39m(B[m [32mvoid[39m(B[m main(String[] args) [36mthrows[39m(B[m Exception {[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5HConfiguration conf = [32mnew[39m(B[m Configuration();[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5HString[] otherArgs = [32mnew[39m(B[m GenericOptionsParser(conf, args).getRemainingArgs();[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5H[31mif[39m(B[m (otherArgs.length < 2) {[?25l[?12l[?25h7[2;43r8[43d[2S[1;45r[41;7HSystem.err.println([31m"Usage: wordcount <in> [<in>...] <out>"[39m(B[m);[42;7HSystem.exit(2);[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5H}[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5HJob job = Job.getInstance(conf, [31m"word count"[39m(B[m);[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[41d[?25l[?12l[?25h[42d[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5Hjob.setJarByClass(WordCount.[36mclass[39m(B[m);[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5Hjob.setMapperClass(TokenizerMapper.[36mclass[39m(B[m);[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5Hjob.setCombinerClass(IntSumReducer.[36mclass[39m(B[m);[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5Hjob.setReducerClass(IntSumReducer.[36mclass[39m(B[m);[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5Hjob.setOutputKeyClass(Text.[36mclass[39m(B[m);[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5Hjob.setOutputValueClass(IntWritable.[36mclass[39m(B[m);[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;5H[31mfor[39m(B[m ([32mint[39m(B[m i = 0; i < otherArgs.length - 1; ++i) {[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;7HFileInputFormat.addInputPath(job, [32mnew[39m(B[m Path(otherArgs[i]));[?25l[?12l[?25h7[2;43r8[43d[2S[1;45r[41;5H}[42dFileOutputFormat.setOutputPath(job,[?25l[?12l[?25h7[2;43r8[43d[2S[1;45r[41;7H[32mnew[39m(B[m Path(otherArgs[otherArgs.length - 1]));[42;5HSystem.exit(job.waitForCompletion([33mtrue[39m(B[m) ? 0 : 1);[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;3H}[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;1H}[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;1H[?25l[?12l[?25h7[2;43r8[43d
+[1;45r[42;1H[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[?12l[?25h[27d[?25l[?12l[?25h[28d[?25l[?12l[?25h [?25l[?12l[?25h [?25l[?12l[?25h [?25l[?12l[?25h [?25l[?12l[?25h[29d[?25l[?12l[?25h[30d[?25l[?12l[?25h[31d[?25l[?12l[?25h[32d[?25l[?12l[?25h[33d[?25l[?12l[?25h[34d[?25l[?12l[?25h[A[?25l[?12l[?25h[A[?25l[1;61H(B[0;7m*[98G(B[m[32;43r[32;1HM[1;45r[32;1H[42m    [33d[49m(B[m[4P[?12l[?25h[?25l[32;43r[43;1H
+[1;45r[32;1H    job.setOutputValueClass(IntWritable.[36mclass[39m(B[m);[5G[?12l[?25h[?25l[?12l[?25h[33d[?25l7[33;43r8M[1;45r[33;1H[42m    [34d[49m(B[m[4P[?12l[?25h[?25l[?12l[?25h[8G[1K [31mfor[39m(B[m ([32mint[39m(B[m i = 0; i < otherArgs.length - 1; ++i) {[34;9H[?25l[?12l[?25h[8P[?25l[?12l[?25h [31mfor[39m(B[m ([32mint[39m(B[m i = 0; i < otherArgs.length - 1; ++i) { [?25l[?12l[?25h  [31mfor[39m(B[m ([32mint[39m(B[m i = 0; i < otherArgs.length - 1; ++i) {  [?25l[?12l[?25h   [31mfor[39m(B[m ([32mint[39m(B[m i = 0; i < otherArgs.length - 1; ++i) {   [?25l[?12l[?25h    [31mfor[39m(B[m ([32mint[39m(B[m i = 0; i < otherArgs.length - 1; ++i) {[5G[?25l[?12l[?25h     [31mfor[39m(B[m ([32mint[39m(B[m i = 0; i < otherArgs.length - 1; ++i) {[6G[?25l[?12l[?25h[1P    [?25l[?12l[?25h[A[?25l    job.setNumReduceTasks(2);[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h[?25l[?12l[?25h2);[K[?25l[?12l[?25h(2);[?25l[?12l[?25h);[K[?25l[?12l[?25h3);[?25l[?12l[?25h[34d[?25l[?12l[?25h[35d[?25l[?12l[?25h[36;6H[?25l[43d(B[0;7mSave modified buffer?                                                                              [44;1H Y(B[m Yes[K[45d(B[0;7m N(B[m No  [45;18H(B[0;7mC(B[m Cancel[K[43;23H[?12l[?25h[?25l[44d(B[0;7m^G(B[m Help[44;25H(B[0;7mM-D(B[m DOS Format[44;49H(B[0;7mM-A(B[m Append[44;73H(B[0;7mM-B(B[m Backup File[45d(B[0;7m^C(B[m Cancel[17G        (B[0;7mM-M(B[m Mac Format[45;49H(B[0;7mM-P(B[m Prepend[45;73H(B[0;7m^T(B[m Browse[43d(B[0;7mFile Name to Write: WordCount.java(B[m[?12l[?25h[?25l[42G[1K (B[0;7m[ Writing... ](B[m[K[1;61H(B[0;7m [98G(B[m[43;41H(B[0;7m[ Wrote 91 lines ](B[m[J[45d[?12l[?25h[45;1H[?1049l[23;0;0t[?1l>[?2004l[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [7mjavac -classpath [27m[7m$[27m[7m(hadoop classpath) -d classes/ WordCount.java[27m[A]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ javac -classpath $(hadoop classpath) -d classes/ WordCount.java
+[?2004l[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ jar -cvf wordcoun t.jar -C classes/ .
+[?2004ladded manifest
+adding: WordCount$IntSumReducer.class(in = 1755) (out= 754)(deflated 57%)
+adding: WordCount$TokenizerMapper.class(in = 1752) (out= 770)(deflated 56%)
+adding: WordCount.class(in = 1966) (out= 1085)(deflated 44%)
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ ls
+[?2004l[0m[01;34mclasses[0m  output.txt  [01;31mwordcount.jar[0m  WordCount.java
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [7mhadoop jar wordco[27m[7mu[27m[7mnt.jar WordCount /input/big9.txt /output/wordcount_big9_2_reducer[27m[A]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ hadoop jar wordcount.jar WordCount /input/big9.txt /output/wordcount_big9_2_reducer
+[?2004l2024-12-07 00:56:25,783 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at /0.0.0.0:8032
+2024-12-07 00:56:26,200 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/hadoop/.staging/job_1732678178586_0003
+2024-12-07 00:56:26,684 INFO mapreduce.JobSubmitter: Cleaning up the staging area /tmp/hadoop-yarn/staging/hadoop/.staging/job_1732678178586_0003
+Exception in thread "main" org.apache.hadoop.mapreduce.lib.input.InvalidInputException: Input path does not exist: hdfs://localhost:9000/input/big9.txt
+	at org.apache.hadoop.mapreduce.lib.input.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:342)
+	at org.apache.hadoop.mapreduce.lib.input.FileInputFormat.listStatus(FileInputFormat.java:281)
+	at org.apache.hadoop.mapreduce.lib.input.FileInputFormat.getSplits(FileInputFormat.java:445)
+	at org.apache.hadoop.mapreduce.JobSubmitter.writeNewSplits(JobSubmitter.java:311)
+	at org.apache.hadoop.mapreduce.JobSubmitter.writeSplits(JobSubmitter.java:328)
+	at org.apache.hadoop.mapreduce.JobSubmitter.submitJobInternal(JobSubmitter.java:201)
+	at org.apache.hadoop.mapreduce.Job$11.run(Job.java:1677)
+	at org.apache.hadoop.mapreduce.Job$11.run(Job.java:1674)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:712)
+	at java.base/javax.security.auth.Subject.doAs(Subject.java:439)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1953)
+	at org.apache.hadoop.mapreduce.Job.submit(Job.java:1674)
+	at org.apache.hadoop.mapreduce.Job.waitForCompletion(Job.java:1695)
+	at WordCount.main(WordCount.java:88)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.apache.hadoop.util.RunJar.run(RunJar.java:330)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:245)
+Caused by: java.io.IOException: Input path does not exist: hdfs://localhost:9000/input/big9.txt
+	at org.apache.hadoop.mapreduce.lib.input.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:315)
+	... 19 more
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ cd ..
+[?2004l[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8[00m$ ls
+[?2004l[0m[01;31mhadoop-mapreduce-client-app-3.4.0-sources.jar[0m
+[01;31mhadoop-mapreduce-client-app-3.4.0-test-sources.jar[0m
+[01;31mhadoop-mapreduce-client-common-3.4.0-sources.jar[0m
+[01;31mhadoop-mapreduce-client-common-3.4.0-test-sources.jar[0m
+[01;31mhadoop-mapreduce-client-core-3.4.0-sources.jar[0m
+[01;31mhadoop-mapreduce-client-core-3.4.0-test-sources.jar[0m
+[01;31mhadoop-mapreduce-client-hs-3.4.0-sources.jar[0m
+[01;31mhadoop-mapreduce-client-hs-3.4.0-test-sources.jar[0m
+[01;31mhadoop-mapreduce-client-hs-plugins-3.4.0-sources.jar[0m
+[01;31mhadoop-mapreduce-client-hs-plugins-3.4.0-test-sources.jar[0m
+[01;31mhadoop-mapreduce-client-jobclient-3.4.0-sources.jar[0m
+[01;31mhadoop-mapreduce-client-jobclient-3.4.0-test-sources.jar[0m
+[01;31mhadoop-mapreduce-client-nativetask-3.4.0-sources.jar[0m
+[01;31mhadoop-mapreduce-client-nativetask-3.4.0-test-sources.jar[0m
+[01;31mhadoop-mapreduce-client-shuffle-3.4.0-sources.jar[0m
+[01;31mhadoop-mapreduce-client-shuffle-3.4.0-test-sources.jar[0m
+[01;31mhadoop-mapreduce-examples-3.4.0-sources.jar[0m
+[01;31mhadoop-mapreduce-examples-3.4.0-test-sources.jar[0m
+[01;34mMETA-INF[0m
+[01;34morg[0m
+[01;34mtest[0m
+[01;34mtest2[0m
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8[00m$ [7mhadoop jar wordcount.j[27m[7ma[27m[7mr WordCount /input/big9.txt /output/wordcount_big9_2_reducer[27m[A]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8[00m$ hadoop jar wordcount.ja[1Pr WordCount /input/big9.txt /output/wordcount_big9_2_reducer
+[?2004lJAR does not exist or is not a normal file: /home/hadoop/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/wordcount.jar
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8[00m$ cd test
+[?2004l[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ ls
+[?2004l[0m[01;34mclasses[0m  output.txt  [01;31mwordcount.jar[0m  WordCount.java
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ ls classes
+[?2004l'WordCount$IntSumReducer.class'  'WordCount$TokenizerMapper.class'   WordCount.class
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ hadoop fs -ls -h  /output/wordcount_big9_2_reducer [K
+[?2004lls: `/output/wordcount_big9_2_reducer': No such file or directory
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [K]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [K]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [K]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [K]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [K]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [K]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [K]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [K]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [K]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ cp [7m./hadoop/share/hadoop/mapreduce/big[27m[7m.[27m[7mtxt[27m[A]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [C[C[C./hadoop/share/hadoop/mapreduce/big.txt [K [7m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[27m[C[C[C[C[C~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test
+[?2004lcp: cannot stat './hadoop/share/hadoop/mapreduce/big.txt': No such file or directory
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ ls
+[?2004lbig.txt  [0m[01;34mclasses[0m  output.txt  [01;31mwordcount.jar[0m  WordCount.java
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ cat big.txt bit[Kg.txt > big.txt
+[?2004l[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ cat big.txt big.txt > big9.txt
+[?2004l[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [7mhadoop jar wordcount.jar WordCount /in[27m[7mp[27m[7mut/big9.txt /output/wordcount_big9_2_reducer[27m[A]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ hadoop jar wordcount.jar WordCount /input/big9.txt /output/wordcount_big9_2_reducer [K
+[?2004l2024-12-07 01:12:14,496 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at /0.0.0.0:8032
+2024-12-07 01:12:14,915 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/hadoop/.staging/job_1732678178586_0004
+2024-12-07 01:12:15,368 INFO mapreduce.JobSubmitter: Cleaning up the staging area /tmp/hadoop-yarn/staging/hadoop/.staging/job_1732678178586_0004
+Exception in thread "main" org.apache.hadoop.mapreduce.lib.input.InvalidInputException: Input path does not exist: hdfs://localhost:9000/input/big9.txt
+	at org.apache.hadoop.mapreduce.lib.input.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:342)
+	at org.apache.hadoop.mapreduce.lib.input.FileInputFormat.listStatus(FileInputFormat.java:281)
+	at org.apache.hadoop.mapreduce.lib.input.FileInputFormat.getSplits(FileInputFormat.java:445)
+	at org.apache.hadoop.mapreduce.JobSubmitter.writeNewSplits(JobSubmitter.java:311)
+	at org.apache.hadoop.mapreduce.JobSubmitter.writeSplits(JobSubmitter.java:328)
+	at org.apache.hadoop.mapreduce.JobSubmitter.submitJobInternal(JobSubmitter.java:201)
+	at org.apache.hadoop.mapreduce.Job$11.run(Job.java:1677)
+	at org.apache.hadoop.mapreduce.Job$11.run(Job.java:1674)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:712)
+	at java.base/javax.security.auth.Subject.doAs(Subject.java:439)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1953)
+	at org.apache.hadoop.mapreduce.Job.submit(Job.java:1674)
+	at org.apache.hadoop.mapreduce.Job.waitForCompletion(Job.java:1695)
+	at WordCount.main(WordCount.java:88)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.apache.hadoop.util.RunJar.run(RunJar.java:330)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:245)
+Caused by: java.io.IOException: Input path does not exist: hdfs://localhost:9000/input/big9.txt
+	at org.apache.hadoop.mapreduce.lib.input.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:315)
+	... 19 more
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ [7mhadoop fs -ls -h /output/wordcount_big[27m[7m9[27m[7m_2_reducer[27m[A]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ hadoop fs -ls -h /output/wordcount_big9_2_reducer
+[?2004lls: `/output/wordcount_big9_2_reducer': No such file or directory
+[?2004h]0;hadoop@comp535-3-server: ~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[01;32mhadoop@comp535-3-server[00m:[01;34m~/hadoop/share/hadoop/mapreduce/sources/morgan-lab8/test[00m$ exit
+[?2004lexit
+
+Script done on 2024-12-07 01:13:46+00:00 [COMMAND_EXIT_CODE="1"]
